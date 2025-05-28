@@ -1,31 +1,49 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-const iconDir = path.resolve(__dirname, '../icons');
+// const iconDir = path.resolve(__dirname, '../icons');
+const ALLOWED_EXTENSIONS = ['.svg'];
 
-const getDirectoryStructure = (dir) => {
-  const items = fs.readdirSync(dir);  // Get all items in the directory
+async function openFolderDialog() {
+  const result = await dialog.showOpenDialog({
+    properties: ['openDirectory'],
+    modal: true,
+  });
+  
+  if (!result.canceled) {
+    console.log('Selected folder:', result.filePaths[0]);
+    return result.filePaths[0];
+  }
+}
+
+
+const getDirectoryStructure = (rootDirectory, currentDirectory) => {
+  const items = fs.readdirSync(currentDirectory);  // Get all items in the directory
   const result = [];
 
   items.forEach((item) => {
-    const itemPath = path.join(dir, item);
+    const itemPath = path.join(currentDirectory, item);
     const stat = fs.statSync(itemPath);
 
     if (stat.isDirectory()) {
       result.push({
         isFile: false,
         name: item,
-        path: path.relative(iconDir, itemPath),
-        parentPath: path.relative(iconDir, dir),
-        children: getDirectoryStructure(itemPath)
+        path: path.relative(rootDirectory, itemPath),
+        parentPath: path.relative(rootDirectory, currentDirectory),
+        children: getDirectoryStructure(rootDirectory, itemPath)
       });
     } else if (stat.isFile()) {
+      const extension = path.extname(item);
+      if (!ALLOWED_EXTENSIONS.includes(extension)) {
+        return;
+      }
       result.push({
         isFile: true,
         name: item,
         extension: path.extname(item),
-        parentPath: path.relative(iconDir, dir),
+        parentPath: path.relative(rootDirectory, currentDirectory),
         size: stat.size,
         url: `file://${itemPath}`,
       });
@@ -35,14 +53,10 @@ const getDirectoryStructure = (dir) => {
   return result;
 };
 
-
-ipcMain.handle('get-icon-root', () => {
-  return iconDir;
-});
-
-ipcMain.handle('read-icons', () => {
+ipcMain.handle('read-icons', async () => {
   try {
-    const structure = getDirectoryStructure(iconDir);
+    const rootDirectory = await openFolderDialog();
+    const structure = getDirectoryStructure(rootDirectory, rootDirectory);
     return structure;
   } catch (error) {
     return { error: error.message };
@@ -51,8 +65,7 @@ ipcMain.handle('read-icons', () => {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    show: false, // hide until it's ready
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -60,6 +73,8 @@ function createWindow() {
     }
   });
 
+  win.maximize();
+  win.show();
   win.loadURL('http://localhost:5173'); // assuming Vite dev server
 }
 

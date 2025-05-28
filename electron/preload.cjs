@@ -10,5 +10,4 @@ contextBridge.exposeInMainWorld('fsAPI', {
       return [];
     }
   },
-  appRoot: async () => await ipcRenderer.invoke('get-icon-root'),
 });

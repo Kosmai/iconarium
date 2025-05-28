@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div v-if="iconsToRender.length" class="app-container">
     <!-- Top bar: Search + Filters -->
     <div class="top-bar">
       <div class="filters">
@@ -43,12 +43,17 @@
       </div>
     </div>
   </div>
+  <SelectFolder
+    v-else
+    @click="loadIcons"
+  />
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import SidebarItem from './components/SidebarItem.vue';
 import IconItem from './components/IconItem.vue';
+import SelectFolder from './SelectFolder.vue';
 
 const iconFilters = ref({
   folder: null,
@@ -60,10 +65,16 @@ const icons = ref([]);
 const iconsToRender = ref([]);
 
 onMounted(async () => {
+  // icons.value = await window.fsAPI.readIcons();
+  // console.log(icons.value);
+  // iconsToRender.value = filterFiles(icons.value);
+});
+
+const loadIcons = async () => {
   icons.value = await window.fsAPI.readIcons();
   console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
-});
+}
 
 const folderSelected = (event) => {
   iconFilters.value.folder = event;
