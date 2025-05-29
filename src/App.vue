@@ -26,9 +26,9 @@
     <div class="main-layout">
       <div class="sidebar">
         <SidebarItem
-          v-for="(category, index) in icons"
+          v-for="(item, index) in icons"
           :key="index"
-          :item="category"
+          :item="item"
           :selectedFolder="iconFilters.folder"
           @select-category="folderSelected"
         />
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import SidebarItem from './components/SidebarItem.vue';
 import IconItem from './components/IconItem.vue';
 import SelectFolder from './SelectFolder.vue';
@@ -119,7 +119,6 @@ const filterFiles = (structure) => {
 }
 
 .top-bar {
-  /* flex-shrink: 0; */
   display: flex;
   align-items: center;
   padding: 10px;

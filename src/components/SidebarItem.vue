@@ -1,6 +1,6 @@
 <template>
     <div v-if="!item.isFile" @click="toggle()" class="folder-label" :class="{'has-children': item.children, highlight: isHighlighted}">
-        <span style="color:gray">{{ item.parentPath }}</span>/{{ item.name }}
+        <span :class="{'parent-path': true, 'highlight-parent': isHighlighted}">{{ item.parentPath }}</span>/{{ item.name }}
         <span v-if="!item.children" class="image-count-tag">1622</span>
     </div>
     <div v-if="item.children" class="nested">
@@ -75,7 +75,13 @@
     margin-left: 8px;
   }
   .highlight {
-    background-color: #343434;
+    background-color: #607e7e;
+  }
+  .parent-path {
+    color: gray;
+  }
+  .highlight-parent {
+    color: darkslategrey;
   }
   </style>
   
