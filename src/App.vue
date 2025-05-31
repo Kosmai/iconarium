@@ -39,6 +39,8 @@
           :key="icon.name"
           :item="icon"
           :filters="iconFilters"
+          :selected-item="selectedIcon"
+          @select-item="itemSelected"
         />
       </div>
     </div>
@@ -63,6 +65,7 @@ const iconFilters = ref({
 
 const icons = ref([]);
 const iconsToRender = ref([]);
+const selectedIcon = ref();
 
 onMounted(async () => {
   // icons.value = await window.fsAPI.readIcons();
@@ -78,6 +81,10 @@ const loadIcons = async () => {
 
 const folderSelected = (event) => {
   iconFilters.value.folder = event;
+}
+
+const itemSelected = (event) => {
+  selectedIcon.value = event;
 }
 
 const resetFilters = () => {

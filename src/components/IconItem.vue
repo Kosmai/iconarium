@@ -1,5 +1,5 @@
 <template>
-    <div v-if="shouldShowItem" @click="copyItem" class="icon-container" :style="`background-image: url(${item.url});`">
+    <div v-if="shouldShowItem" @click="selectItem()" @click.right="copyItem()" class="icon-container" :class="{'highlight': isHighlighted}" :style="`background-image: url(${item.url});`">
         <div>{{ item.name }}</div>
     </div>
 </template>
@@ -9,6 +9,8 @@
 
 import { ref, computed } from 'vue';
 
+const emit = defineEmits(['select-item']);
+
 const props = defineProps({
   item: {
       type: Object,
@@ -17,12 +19,28 @@ const props = defineProps({
   filters: {
     type: Object,
     required: false,
+  },
+  selectedItem: {
+    type: String,
+    default: null,
   }
 });
 
 const showPopup = ref(false);
 
+const selectItem = (event) => {
+    emit('select-item', event ? event : props.item.url);
+}
+
+const isHighlighted = computed(() => {
+    if (!props.selectedItem) {
+      return false;
+    }
+    return props.item.url === props.selectedItem;
+});
+
 const copyItem = () => {
+    console.log('Copied file');
     navigator.clipboard.writeText(`${props.item.parentPath}/${props.item.name}`);
 }
 
@@ -56,6 +74,10 @@ const shouldShowItem = computed(()=> {
     align-items: center;
     flex-direction: column;
     font-size: 12px;
+}
+.highlight {
+    outline-color: #aa9770;
+    outline-style: solid;
 }
 .popup {
   position: relative;
