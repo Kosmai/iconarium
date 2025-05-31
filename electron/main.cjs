@@ -17,8 +17,7 @@ async function openFolderDialog() {
   }
 }
 
-
-const getDirectoryStructure = (rootDirectory, currentDirectory) => {
+const getDirectoryStructureRec = (rootDirectory, currentDirectory) => {
   const items = fs.readdirSync(currentDirectory);  // Get all items in the directory
   const result = [];
 
@@ -32,7 +31,7 @@ const getDirectoryStructure = (rootDirectory, currentDirectory) => {
         name: item,
         path: path.relative(rootDirectory, itemPath),
         parentPath: path.relative(rootDirectory, currentDirectory),
-        children: getDirectoryStructure(rootDirectory, itemPath)
+        children: getDirectoryStructureRec(rootDirectory, itemPath)
       });
     } else if (stat.isFile()) {
       const extension = path.extname(item);
@@ -53,11 +52,20 @@ const getDirectoryStructure = (rootDirectory, currentDirectory) => {
   return result;
 };
 
+const getDirectoryStructure = (rootDirectory) => {
+  const structure = getDirectoryStructureRec(rootDirectory, rootDirectory);
+  return [{
+    isFile: false,
+    name: path.basename(rootDirectory),
+    path: path.relative(rootDirectory, rootDirectory),
+    children: structure
+  }];
+}
+
 ipcMain.handle('read-icons', async () => {
   try {
     const rootDirectory = await openFolderDialog();
-    const structure = getDirectoryStructure(rootDirectory, rootDirectory);
-    return structure;
+    return getDirectoryStructure(rootDirectory);
   } catch (error) {
     return { error: error.message };
   }

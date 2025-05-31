@@ -26,9 +26,9 @@
     <div class="main-layout">
       <div class="sidebar">
         <SidebarItem
-          v-for="(category, index) in icons"
+          v-for="(item, index) in icons"
           :key="index"
-          :item="category"
+          :item="item"
           :selectedFolder="iconFilters.folder"
           @select-category="folderSelected"
         />
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import SidebarItem from './components/SidebarItem.vue';
 import IconItem from './components/IconItem.vue';
 import SelectFolder from './SelectFolder.vue';
@@ -141,15 +141,13 @@ const filterFiles = (structure) => {
 .main-layout {
   display: flex;
   flex: 1;
-  overflow: hidden;
-  width: 100%;
+  min-height: 0;
 }
 
 .sidebar {
   width: 500px;
   border-right: 1px solid #ccc;
   padding: 10px;
-  overflow-y: auto;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -171,11 +169,15 @@ const filterFiles = (structure) => {
 .main-content {
   display: grid;
   padding: 20px;
-  overflow-y: auto;
   width: 100%;
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-auto-rows: auto;
-  height: max-content;
 }
+
+.sidebar, .main-content {
+  overflow-y: auto;
+  height: 100%;
+}
+
 </style>
