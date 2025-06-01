@@ -1,12 +1,12 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require("electron");
 
-contextBridge.exposeInMainWorld('fsAPI', {
+contextBridge.exposeInMainWorld("fsAPI", {
   readIcons: async () => {
     try {
-      const icons = await ipcRenderer.invoke('read-icons');  // Use IPC to get the data
+      const icons = await ipcRenderer.invoke("read-icons"); // Use IPC to get the data
       return icons;
     } catch (error) {
-      console.error('Error fetching icons:', error);
+      console.error("Error fetching icons:", error);
       return [];
     }
   },

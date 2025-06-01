@@ -3,9 +3,7 @@
     <!-- Top bar: Search + Filters -->
     <div class="top-bar">
       <div class="filters">
-        <div @click="resetFilters">
-          Clear filters
-        </div>
+        <div @click="resetFilters">Clear filters</div>
         <label>
           <select v-model="iconFilters.extension">
             <option value="">All formats</option>
@@ -48,24 +46,21 @@
       </div>
     </div>
   </div>
-  <SelectFolder
-    v-else
-    @click="loadIcons"
-  />
+  <SelectFolder v-else @click="loadIcons" />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import SidebarItem from './components/SidebarItem.vue';
-import IconItem from './components/IconItem.vue';
-import SelectFolder from './SelectFolder.vue';
-import IconDetails from './components/IconDetails.vue';
+import { ref, onMounted } from "vue";
+import SidebarItem from "./components/SidebarItem.vue";
+import IconItem from "./components/IconItem.vue";
+import SelectFolder from "./SelectFolder.vue";
+import IconDetails from "./components/IconDetails.vue";
 
 const iconFilters = ref({
   folder: null,
-  extension: '',
-  search: '',
-})
+  extension: "",
+  search: "",
+});
 
 const icons = ref([]);
 const iconsToRender = ref([]);
@@ -81,23 +76,23 @@ const loadIcons = async () => {
   icons.value = await window.fsAPI.readIcons();
   console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
-}
+};
 
 const folderSelected = (event) => {
   iconFilters.value.folder = event;
-}
+};
 
 const itemSelected = (event) => {
   selectedIcon.value = event;
-}
+};
 
 const resetFilters = () => {
   iconFilters.value = {
     folder: null,
-    extension: '',
-    search: '',
-  }
-}
+    extension: "",
+    search: "",
+  };
+};
 
 const filterFiles = (structure) => {
   let result = [];
@@ -106,9 +101,9 @@ const filterFiles = (structure) => {
     const item = structure[key];
 
     if (item.isFile) {
-      result.push(item);  // Keep the file
+      result.push(item); // Keep the file
     } else if (item.children) {
-      const filteredChildren = filterFiles(item.children);  // Recursively filter children
+      const filteredChildren = filterFiles(item.children); // Recursively filter children
       if (Object.keys(filteredChildren).length > 0) {
         result = result.concat(filteredChildren);
       }
@@ -117,7 +112,6 @@ const filterFiles = (structure) => {
 
   return result;
 };
-
 </script>
 
 <style scoped>
@@ -186,17 +180,17 @@ const filterFiles = (structure) => {
   grid-auto-rows: auto;
 }
 
-.sidebar, .main-content {
+.sidebar,
+.main-content {
   overflow-y: auto;
   height: 100%;
 }
 
 .icon-details {
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    width: 100%;
-    max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  width: 100%;
+  max-width: 280px;
 }
-
 </style>

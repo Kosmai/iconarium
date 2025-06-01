@@ -1,3 +1,3 @@
 <template>
-    <button>Select icons folder</button>
+  <button>Select icons folder</button>
 </template>

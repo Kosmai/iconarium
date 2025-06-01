@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "electron": "electron electron/main.cjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "checkFormat": "prettier . --check",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "vue": "^3.5.13"
