@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!item.isFile" @click="toggle()" class="folder-label" :class="{'has-children': item.children, highlight: isHighlighted}">
+    <div v-if="!item.isFile" @click="toggle()" class="directory-label" :class="{'has-children': item.children, highlight: isHighlighted}">
         <span :class="{'parent-path': true, 'highlight-parent': isHighlighted}">{{ item.parentPath }}</span>/{{ item.name }}
         <span v-if="!item.children" class="image-count-tag">1622</span>
     </div>
@@ -8,8 +8,8 @@
             v-for="child in item.children"
             :key="child.name"
             :item="child"
-            :selected-folder="selectedFolder"
-            @select-category="toggle"
+            :selectedDirectory="selectedDirectory"
+            @select="toggle"
         />
     </div>
   </template>
@@ -18,32 +18,29 @@
   import { ref, computed } from 'vue';
   import SidebarItem from './SidebarItem.vue';
 
-  const emit = defineEmits(['select-category']);
+  const emit = defineEmits(['select']);
 
   const props = defineProps({
     item: {
         type: Object,
         required: true
     },
-    selectedFolder: {
+    selectedDirectory: {
       type: String,
       default: null,
     },
     });
-  const isOpen = ref(true);
+
   const toggle = (event) => {
-    emit('select-category', event ? event : props.item.path);
+    emit('select', event ? event : props.item.path);
   };
   const isHighlighted = computed(() => {
-    if (!props.selectedFolder) {
-      return false;
-    }
-    return props.item.path === props.selectedFolder;
+    return props.item.path === props.selectedDirectory;
   });
   </script>
   
   <style scoped>
-  .folder-label {
+  .directory-label {
     cursor: pointer;
     padding: 4px;
     user-select: none;

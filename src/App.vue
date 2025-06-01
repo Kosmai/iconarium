@@ -24,15 +24,11 @@
 
     <!-- Layout: Sidebar + Main -->
     <div class="main-layout">
-      <div class="sidebar">
-        <SidebarItem
-          v-for="(item, index) in icons"
-          :key="index"
-          :item="item"
-          :selectedFolder="iconFilters.folder"
-          @select-category="folderSelected"
-        />
-      </div>
+      <DirectoriesSidebar
+        :directoryStructure="icons"
+        :selectedDirectory="iconFilters.folder"
+        @directory-selected="directorySelected"
+      />
       <div class="main-content">
         <IconItem
           v-for="icon in iconsToRender"
@@ -51,7 +47,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import SidebarItem from './components/SidebarItem.vue';
+import DirectoriesSidebar from './components/DirectoriesSidebar.vue';
 import IconItem from './components/IconItem.vue';
 import SelectFolder from './SelectFolder.vue';
 
@@ -64,19 +60,13 @@ const iconFilters = ref({
 const icons = ref([]);
 const iconsToRender = ref([]);
 
-onMounted(async () => {
-  // icons.value = await window.fsAPI.readIcons();
-  // console.log(icons.value);
-  // iconsToRender.value = filterFiles(icons.value);
-});
-
 const loadIcons = async () => {
   icons.value = await window.fsAPI.readIcons();
   console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
 }
 
-const folderSelected = (event) => {
+const directorySelected = (event) => {
   iconFilters.value.folder = event;
 }
 
@@ -144,28 +134,6 @@ const filterFiles = (structure) => {
   min-height: 0;
 }
 
-.sidebar {
-  width: 500px;
-  border-right: 1px solid #ccc;
-  padding: 10px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: start;
-  gap: 8px;
-}
-
-.sidebar li {
-  padding: 6px 0;
-  cursor: pointer;
-  width: 100%;
-}
-
 .main-content {
   display: grid;
   padding: 20px;
@@ -173,9 +141,6 @@ const filterFiles = (structure) => {
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-auto-rows: auto;
-}
-
-.sidebar, .main-content {
   overflow-y: auto;
   height: 100%;
 }
