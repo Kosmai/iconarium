@@ -48,14 +48,14 @@
     display: flex;
     border: 1px solid darkslategrey;
     border-radius: 4px;
-    width: 500px;
+    width: 250px;
   }
   .has-children {
     background-color: darkslategrey;
     border-radius: 4px;
   }
   .nested {
-    width: 500px;
+    width: 250px;
     display: flex;
     flex-direction: column;
     gap: 8px;

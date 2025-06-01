@@ -7,7 +7,7 @@
           :selectedDirectory="selectedDirectory"
           @select="directorySelected"
         />
-      </div>
+    </div>
 </template>
 
 <script setup>
@@ -50,11 +50,6 @@ const directorySelected = event => {
   gap: 8px;
   overflow-y: auto;
   height: 100%;
-}
-.sidebar li {
-  padding: 6px 0;
-  cursor: pointer;
-  width: 100%;
 }
 
 </style>

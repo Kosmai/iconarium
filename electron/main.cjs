@@ -1,9 +1,11 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const Store = require('electron-store').default;
 const path = require('path');
 const fs = require('fs');
 
 // const iconDir = path.resolve(__dirname, '../icons');
 const ALLOWED_EXTENSIONS = ['.svg'];
+const store = new Store();
 
 async function openFolderDialog() {
   const result = await dialog.showOpenDialog({
@@ -13,6 +15,7 @@ async function openFolderDialog() {
   
   if (!result.canceled) {
     console.log('Selected folder:', result.filePaths[0]);
+    store.set('recentFolderPath', result.filePaths[0]);
     return result.filePaths[0];
   }
 }
@@ -62,13 +65,18 @@ const getDirectoryStructure = (rootDirectory) => {
   }];
 }
 
-ipcMain.handle('read-icons', async () => {
+ipcMain.handle('readIcons', async (event, withFolderSelection) => {
   try {
-    const rootDirectory = await openFolderDialog();
+    console.log(withFolderSelection);
+    console.log(store.get('recentFolderPath'));
+    const rootDirectory = withFolderSelection ? await openFolderDialog() : (store.get('recentFolderPath') ?? await openFolderDialog());
     return getDirectoryStructure(rootDirectory);
   } catch (error) {
     return { error: error.message };
   }
+});
+ipcMain.handle('retrieveRecentFolderPath', () => {
+  return store.get('recentFolderPath') ?? null;
 });
 
 function createWindow() {

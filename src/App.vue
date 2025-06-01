@@ -41,12 +41,13 @@
   </div>
   <SelectFolder
     v-else
-    @click="loadIcons"
+    @select="loadIcons"
+    @selectPreviousFolder="loadIcons(false)"
   />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import DirectoriesSidebar from './components/DirectoriesSidebar.vue';
 import IconItem from './components/IconItem.vue';
 import SelectFolder from './SelectFolder.vue';
@@ -60,8 +61,8 @@ const iconFilters = ref({
 const icons = ref([]);
 const iconsToRender = ref([]);
 
-const loadIcons = async () => {
-  icons.value = await window.fsAPI.readIcons();
+const loadIcons = async (withFolderSelection = true) => {
+  icons.value = await window.fsAPI.readIcons(withFolderSelection);
   console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
 }
