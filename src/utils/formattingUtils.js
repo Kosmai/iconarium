@@ -10,7 +10,7 @@
  *
  * Credits to https://stackoverflow.com/a/14919494
  */
-function formatFileSize(bytes, si = true, dp = 1) {
+export function formatFileSize(bytes, si = true, dp = 1) {
   const thresh = si ? 1000 : 1024;
 
   if (Math.abs(bytes) < thresh) {
@@ -34,7 +34,7 @@ function formatFileSize(bytes, si = true, dp = 1) {
   return bytes.toFixed(dp) + " " + units[u];
 }
 
-const formatTime = (dateString) => {
+export function formatTime(dateString) {
   const date = new Date(dateString);
   if (isNaN(date)) return "Unknown";
 
@@ -50,4 +50,4 @@ const formatTime = (dateString) => {
   };
 
   return date.toLocaleString(undefined, options);
-};
+}
