@@ -45,6 +45,9 @@ const getDirectoryStructureRec = (rootDirectory, currentDirectory) => {
         parentPath: path.relative(rootDirectory, currentDirectory),
         size: stat.size,
         url: `file://${itemPath}`,
+        lastAccessedTime: stat.atimeMs,
+        modifiedTime: stat.mtimeMs,
+        createdTime: stat.ctimeMs,
       });
     }
   });

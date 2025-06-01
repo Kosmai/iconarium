@@ -43,6 +43,9 @@
           @select-item="itemSelected"
         />
       </div>
+      <div v-if="selectedIcon" class="icon-details">
+        <IconDetails :item="selectedIcon" />
+      </div>
     </div>
   </div>
   <SelectFolder
@@ -56,6 +59,7 @@ import { ref, onMounted } from 'vue';
 import SidebarItem from './components/SidebarItem.vue';
 import IconItem from './components/IconItem.vue';
 import SelectFolder from './SelectFolder.vue';
+import IconDetails from './components/IconDetails.vue';
 
 const iconFilters = ref({
   folder: null,
@@ -185,6 +189,14 @@ const filterFiles = (structure) => {
 .sidebar, .main-content {
   overflow-y: auto;
   height: 100%;
+}
+
+.icon-details {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    width: 100%;
+    max-width: 280px;
 }
 
 </style>
