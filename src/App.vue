@@ -18,6 +18,7 @@
         placeholder="Search..."
         class="search-input"
       />
+      <p class="items-metric">{{ iconsToRender.length }} items</p>
     </div>
 
     <!-- Layout: Sidebar + Main -->

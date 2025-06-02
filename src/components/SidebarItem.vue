@@ -9,8 +9,12 @@
       item.parentPath
     }}</span
     >/{{ item.name }}
-    <span v-if="!item.children" class="image-count-tag">1622</span>
+    <span v-if="directFileCount > 0" class="image-count-tag">
+      {{ directFileCount }} icon<span v-if="directFileCount !== 1">s</span>
+    </span>
+    <span v-else class="image-count-tag">no icons</span>
   </div>
+
   <div v-if="item.children" class="nested">
     <SidebarItem
       v-for="child in item.children"
@@ -43,11 +47,15 @@ const isOpen = ref(true);
 const toggle = (event) => {
   emit("select", event ? event : props.item.path);
 };
-const isHighlighted = computed(() => {
-  if (!props.selectedDirectory) {
-    return false;
-  }
-  return props.item.path === props.selectedDirectory;
+
+const isHighlighted = computed(
+  () => props.item.path === props.selectedDirectory,
+);
+
+// ✅ Only direct files in current folder (not recursive)
+const directFileCount = computed(() => {
+  if (!props.item.children) return 0;
+  return props.item.children.filter((child) => child.isFile).length;
 });
 </script>
 
