@@ -3,9 +3,7 @@
     <!-- Top bar: Search + Filters -->
     <div class="top-bar">
       <div class="filters">
-        <div @click="resetFilters">
-          Clear filters
-        </div>
+        <div @click="resetFilters">Clear filters</div>
         <label>
           <select v-model="iconFilters.extension">
             <option value="">All formats</option>
@@ -35,7 +33,12 @@
           :key="icon.name"
           :item="icon"
           :filters="iconFilters"
+          :selected-item="selectedIcon"
+          @select-item="itemSelected"
         />
+      </div>
+      <div v-if="selectedIcon" class="icon-details">
+        <IconDetails :item="selectedIcon" />
       </div>
     </div>
   </div>
@@ -47,37 +50,44 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import DirectoriesSidebar from './components/DirectoriesSidebar.vue';
-import IconItem from './components/IconItem.vue';
-import SelectFolder from './SelectFolder.vue';
+import { ref, onMounted } from "vue";
+import SidebarItem from "./components/SidebarItem.vue";
+import IconItem from "./components/IconItem.vue";
+import SelectFolder from "./SelectFolder.vue";
+import IconDetails from "./components/IconDetails.vue";
+import DirectoriesSidebar from "./components/DirectoriesSidebar.vue";
 
 const iconFilters = ref({
   folder: null,
-  extension: '',
-  search: '',
-})
+  extension: "",
+  search: "",
+});
 
 const icons = ref([]);
 const iconsToRender = ref([]);
+const selectedIcon = ref();
 
 const loadIcons = async (withFolderSelection = true) => {
   icons.value = await window.fsAPI.readIcons(withFolderSelection);
   console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
-}
+};
 
 const directorySelected = (event) => {
   iconFilters.value.folder = event;
-}
+};
+
+const itemSelected = (event) => {
+  selectedIcon.value = event;
+};
 
 const resetFilters = () => {
   iconFilters.value = {
     folder: null,
-    extension: '',
-    search: '',
-  }
-}
+    extension: "",
+    search: "",
+  };
+};
 
 const filterFiles = (structure) => {
   let result = [];
@@ -86,9 +96,9 @@ const filterFiles = (structure) => {
     const item = structure[key];
 
     if (item.isFile) {
-      result.push(item);  // Keep the file
+      result.push(item); // Keep the file
     } else if (item.children) {
-      const filteredChildren = filterFiles(item.children);  // Recursively filter children
+      const filteredChildren = filterFiles(item.children); // Recursively filter children
       if (Object.keys(filteredChildren).length > 0) {
         result = result.concat(filteredChildren);
       }
@@ -97,7 +107,6 @@ const filterFiles = (structure) => {
 
   return result;
 };
-
 </script>
 
 <style scoped>
@@ -146,4 +155,11 @@ const filterFiles = (structure) => {
   height: 100%;
 }
 
+.icon-details {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  width: 100%;
+  max-width: 280px;
+}
 </style>

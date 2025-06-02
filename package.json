@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "electron": "electron electron/main.cjs"
+    "electron": "electron electron/main.cjs",
+    "prepare": "husky",
+    "checkFormat": "prettier . --check",
+    "format": "prettier . --write"
   },
   "dependencies": {
     "electron-store": "^10.0.1",
@@ -16,6 +19,12 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.3",
     "electron": "^36.2.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "prettier": "3.5.3",
     "vite": "^6.3.5"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }
