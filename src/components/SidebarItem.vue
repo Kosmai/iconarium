@@ -9,10 +9,7 @@
       item.parentPath
     }}</span
     >/{{ item.name }}
-    <span v-if="directFileCount > 0" class="image-count-tag">
-      {{ directFileCount }} icon<span v-if="directFileCount !== 1">s</span>
-    </span>
-    <span v-else class="image-count-tag">no icons</span>
+    <span class="image-count-tag">{{ fileCountLabel }}</span>
   </div>
 
   <div v-if="item.children" class="nested">
@@ -43,19 +40,26 @@ const props = defineProps({
   },
 });
 
-const isOpen = ref(true);
 const toggle = (event) => {
   emit("select", event ? event : props.item.path);
 };
 
-const isHighlighted = computed(
-  () => props.item.path === props.selectedDirectory,
+const directFileCount = ref(
+  props.item?.children?.filter((child) => child.isFile).length ?? 0,
 );
 
-// ✅ Only direct files in current folder (not recursive)
-const directFileCount = computed(() => {
-  if (!props.item.children) return 0;
-  return props.item.children.filter((child) => child.isFile).length;
+const isHighlighted = computed(() => {
+  if (!props.selectedDirectory) {
+    return false;
+  }
+  return props.item.path === props.selectedDirectory;
+});
+
+const fileCountLabel = computed(() => {
+  if (directFileCount.value === 0) {
+    return "no icons";
+  }
+  return `${directFileCount.value} icon${directFileCount.value > 1 ? "s" : ""}`;
 });
 </script>
 
