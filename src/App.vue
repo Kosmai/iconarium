@@ -34,12 +34,17 @@
           :key="icon.name"
           :item="icon"
           :filters="iconFilters"
-          :selected-item="selectedIcon"
-          @select-item="itemSelected"
+          :selected-items="selectedItems"
+          @select-single="selectItem($event, false)"
+          @select-multiple="selectItem($event, true)"
         />
       </div>
-      <div v-if="selectedIcon" class="icon-details">
-        <IconDetails :item="selectedIcon" />
+      <div class="icon-details" v-if="Object.keys(selectedItems).length">
+        <IconDetails
+          v-if="Object.keys(selectedItems).length === 1"
+          :item="Object.values(selectedItems)[0]"
+        />
+        <IconDetailsMultiple v-else :items="selectedItems" />
       </div>
     </div>
   </div>
@@ -57,6 +62,7 @@ import IconItem from "./components/IconItem.vue";
 import SelectFolder from "./SelectFolder.vue";
 import IconDetails from "./components/IconDetails.vue";
 import DirectoriesSidebar from "./components/DirectoriesSidebar.vue";
+import IconDetailsMultiple from "./components/IconDetailsMultiple.vue";
 
 const iconFilters = ref({
   folder: null,
@@ -66,11 +72,10 @@ const iconFilters = ref({
 
 const icons = ref([]);
 const iconsToRender = ref([]);
-const selectedIcon = ref();
+const selectedItems = ref({});
 
 const loadIcons = async (withFolderSelection = true) => {
   icons.value = await window.fsAPI.readIcons(withFolderSelection);
-  console.log(icons.value);
   iconsToRender.value = filterFiles(icons.value);
 };
 
@@ -78,8 +83,16 @@ const directorySelected = (event) => {
   iconFilters.value.folder = event;
 };
 
-const itemSelected = (event) => {
-  selectedIcon.value = event;
+const selectItem = (event, multipleSelection) => {
+  if (!multipleSelection) {
+    selectedItems.value = {}; // Single selection, clear previous selections
+  }
+  if (selectedItems.value[event.url]) {
+    // If the item is already selected, toggle it off
+    delete selectedItems.value[event.url];
+    return;
+  }
+  selectedItems.value[event.url] = event;
 };
 
 const resetFilters = () => {

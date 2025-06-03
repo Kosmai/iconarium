@@ -1,8 +1,8 @@
 <template>
   <div
     v-if="shouldShowItem"
-    @click="selectItem()"
-    @click.right="copyItem()"
+    @click="selectItem"
+    @click.right="copyItem"
     class="icon-container"
     :class="{ highlight: isHighlighted }"
     :style="`background-image: url(${item.url});`"
@@ -15,7 +15,7 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const emit = defineEmits(["select-item"]);
+const emit = defineEmits(["select-single", "select-multiple"]);
 
 const props = defineProps({
   item: {
@@ -26,28 +26,28 @@ const props = defineProps({
     type: Object,
     required: false,
   },
-  selectedItem: {
+  selectedItems: {
     type: Object,
     default: null,
   },
 });
 
-const showPopup = ref(false);
 const showCopiedFeedback = ref(false);
 
 const selectItem = (event) => {
-  emit("select-item", event ? event : props.item);
+  if (event.ctrlKey || event.metaKey) {
+    emit("select-multiple", props.item);
+    return;
+  }
+  emit("select-single", props.item);
 };
 
 const isHighlighted = computed(() => {
-  if (!props.selectedItem) {
-    return false;
-  }
-  return props.item.url === props.selectedItem.url;
+  return props.selectedItems[props.item.url] ?? false;
 });
 
-const copyItem = () => {
-  selectItem();
+const copyItem = (event) => {
+  selectItem(event);
   navigator.clipboard
     .writeText(`${props.item.parentPath}/${props.item.name}`)
     .then(() => {
