@@ -56,8 +56,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import SidebarItem from "./components/SidebarItem.vue";
+import { ref } from "vue";
 import IconItem from "./components/IconItem.vue";
 import SelectFolder from "./SelectFolder.vue";
 import IconDetails from "./components/IconDetails.vue";

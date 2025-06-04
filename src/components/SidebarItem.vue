@@ -1,30 +1,41 @@
 <template>
   <div
-    v-if="!item.isFile"
     @click="toggle()"
-    class="directory-label"
-    :class="{ 'has-children': item.children, highlight: isHighlighted }"
+    class="directory-container"
+    :class="{ highlight: isHighlighted }"
   >
-    <span :class="{ 'parent-path': true, 'highlight-parent': isHighlighted }">{{
-      item.parentPath
-    }}</span
-    >/{{ item.name }}
+    <button @click.stop="toggleExpand()" class="expand-button">
+      <img
+        src="../assets/down-arrow.svg"
+        class="expand-icon"
+        alt="Expand Directory"
+        :style="{ transform: isExpanded ? 'rotate(180deg)' : 'none' }"
+      />
+    </button>
+    <div class="directory-name">
+      <span
+        v-if="item.parentPath"
+        :class="{ 'parent-path': true, 'highlight-parent': isHighlighted }"
+        >{{ item.parentPath }}/</span
+      >
+      {{ item.name }}
+    </div>
     <span class="image-count-tag">{{ fileCountLabel }}</span>
   </div>
-
-  <div v-if="item.children" class="nested">
+  <div v-if="hasChildDirectories && isExpanded" class="nested">
     <SidebarItem
       v-for="child in item.children"
       :key="child.name"
       :item="child"
       :selectedDirectory="selectedDirectory"
+      :expand="isExpanded"
       @select="toggle"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import SidebarItem from "./SidebarItem.vue";
 
 const emit = defineEmits(["select"]);
@@ -38,15 +49,33 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  expand: {
+    type: Boolean,
+    default: true,
+  },
 });
+
+watch(
+  () => props.expand,
+  (newVal) => {
+    isExpanded.value = newVal;
+  },
+);
 
 const toggle = (event) => {
   emit("select", event ? event : props.item.path);
 };
 
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value;
+  console.log(props.item.children);
+};
+
 const directFileCount = ref(
   props.item?.children?.filter((child) => child.isFile).length ?? 0,
 );
+
+const isExpanded = ref(props.expand);
 
 const isHighlighted = computed(() => {
   if (!props.selectedDirectory) {
@@ -61,22 +90,28 @@ const fileCountLabel = computed(() => {
   }
   return `${directFileCount.value} icon${directFileCount.value > 1 ? "s" : ""}`;
 });
+
+const hasChildDirectories = computed(() => {
+  return (
+    props.item.children && props.item.children.some((child) => !child.isFile)
+  );
+});
 </script>
 
 <style scoped>
-.directory-label {
+.directory-container {
+  background-color: darkslategrey;
   cursor: pointer;
   padding: 4px;
-  user-select: none;
   align-items: center;
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 6px;
   border: 1px solid darkslategrey;
   border-radius: 4px;
-  width: 250px;
-}
-.has-children {
-  background-color: darkslategrey;
-  border-radius: 4px;
+  width: fit-content;
 }
 .nested {
   width: 250px;
@@ -88,20 +123,33 @@ const fileCountLabel = computed(() => {
 .image-count-tag {
   border: 1px solid gray;
   border-radius: 8px;
-
   color: white;
   font-size: 13px;
   padding: 3px;
   background-color: #242424;
-  margin-left: 8px;
+  white-space: nowrap;
 }
 .highlight {
   background-color: #607e7e;
+}
+.directory-name {
+  white-space: nowrap;
 }
 .parent-path {
   color: gray;
 }
 .highlight-parent {
   color: darkslategrey;
+}
+.expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.expand-icon {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.15s ease;
 }
 </style>

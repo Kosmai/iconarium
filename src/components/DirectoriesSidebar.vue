@@ -1,36 +1,36 @@
 <template>
-    <div class="sidebar">
-        <SidebarItem
-          v-for="(item, index) in directoryStructure"
-          :key="index"
-          :item="item"
-          :selectedDirectory="selectedDirectory"
-          @select="directorySelected"
-        />
-    </div>
+  <div class="sidebar">
+    <SidebarItem
+      v-for="(item, index) in directoryStructure"
+      :key="index"
+      :item="item"
+      :selectedDirectory="selectedDirectory"
+      :expand="true"
+      @select="directorySelected"
+    />
+  </div>
 </template>
 
 <script setup>
-import SidebarItem from './SidebarItem.vue';
-import {defineEmits, defineProps} from 'vue';
+import SidebarItem from "./SidebarItem.vue";
+import { defineEmits, defineProps } from "vue";
 
-const emit = defineEmits(['directory-selected']);
+const emit = defineEmits(["directory-selected"]);
 
 const props = defineProps({
-    directoryStructure: {
-        type: Object,
-        required: true,
-    },
-    selectedDirectory: {
-        type: String,
-        default: null,
-    },
+  directoryStructure: {
+    type: Object,
+    required: true,
+  },
+  selectedDirectory: {
+    type: String,
+    default: null,
+  },
 });
 
-const directorySelected = event => {
-    emit('directory-selected', event);
-}
-
+const directorySelected = (event) => {
+  emit("directory-selected", event);
+};
 </script>
 
 <style scoped>
@@ -51,5 +51,4 @@ const directorySelected = event => {
   overflow-y: auto;
   height: 100%;
 }
-
 </style>
