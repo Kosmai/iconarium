@@ -68,6 +68,7 @@ const toggle = (event) => {
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
+  console.log(props.item.children);
 };
 
 const directFileCount = ref(
