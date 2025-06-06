@@ -51,7 +51,7 @@ const directorySelected = (event) => {
 
 <style scoped>
 .sidebar-content {
-  width: 500px;
+  width: 350px;
   border-right: 1px solid #f0f0f054;
   padding: 10px;
   display: flex;
