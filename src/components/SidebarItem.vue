@@ -2,23 +2,24 @@
   <div
     v-if="!item.isFile"
     @click="toggle()"
+    @dblclick="toggleExpand()"
     class="directory-container"
     :class="{ highlight: isHighlighted }"
   >
-    <button
+    <img
       v-if="hasChildDirectories"
       @click.stop="toggleExpand()"
-      class="expand-button"
+      src="../assets/down-arrow.svg"
+      class="expand-icon"
+      alt="Expand Directory"
+      :style="{ transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)' }"
+    />
+    <div
+      class="directory-name"
+      :class="{ 'without-expand': !hasChildDirectories }"
     >
-      <img
-        src="../assets/down-arrow.svg"
-        class="expand-icon"
-        alt="Expand Directory"
-        :style="{ transform: isExpanded ? 'rotate(180deg)' : 'none' }"
-      />
-    </button>
-    <div class="directory-name">{{ item.name }}</div>
-    <span class="image-count-tag">{{ fileCountLabel }}</span>
+      {{ item.name }}
+    </div>
   </div>
   <div v-if="hasChildDirectories && isExpanded" class="nested">
     <SidebarItem
@@ -68,21 +69,10 @@ const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
 };
 
-const directFileCount = ref(
-  props.item?.children?.filter((child) => child.isFile).length ?? 0,
-);
-
 const isExpanded = ref(props.expand);
 
 const isHighlighted = computed(() => {
   return props.item.path === props.selectedDirectory;
-});
-
-const fileCountLabel = computed(() => {
-  if (directFileCount.value === 0) {
-    return "no icons";
-  }
-  return `${directFileCount.value} icon${directFileCount.value > 1 ? "s" : ""}`;
 });
 
 const hasChildDirectories = computed(() => {
@@ -94,56 +84,38 @@ const hasChildDirectories = computed(() => {
 
 <style scoped>
 .directory-container {
-  background-color: darkslategrey;
   cursor: pointer;
-  padding: 4px;
   align-items: center;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-start;
   gap: 6px;
-  border: 1px solid darkslategrey;
-  border-radius: 4px;
-  width: fit-content;
+  border-radius: 2px;
+  width: 100%;
+  padding-right: 12px;
 }
 .nested {
   width: 250px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
   padding-left: 16px;
-}
-.image-count-tag {
-  border: 1px solid gray;
-  border-radius: 8px;
-  color: white;
-  font-size: 13px;
-  padding: 3px;
-  background-color: #242424;
-  white-space: nowrap;
 }
 .highlight {
   background-color: #607e7e;
 }
 .directory-name {
   white-space: nowrap;
+  user-select: none;
 }
-.parent-path {
-  color: gray;
-}
-.highlight-parent {
-  color: darkslategrey;
-}
-.expand-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
+.directory-name.without-expand {
+  padding-left: 20px;
 }
 .expand-icon {
-  width: 15px;
-  height: 15px;
+  user-select: none;
+  padding: 4px;
+  width: 12px;
+  height: 12px;
   transition: transform 0.15s ease;
 }
 </style>

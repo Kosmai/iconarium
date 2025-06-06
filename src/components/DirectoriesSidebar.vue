@@ -42,12 +42,8 @@ const directorySelected = (event) => {
   align-items: flex-start;
   justify-content: flex-start;
   list-style: none;
-  padding: 0;
-  display: flex;
   flex-direction: column;
-  align-items: flex-start;
   text-align: start;
-  gap: 8px;
   overflow-y: auto;
   height: 100%;
 }
