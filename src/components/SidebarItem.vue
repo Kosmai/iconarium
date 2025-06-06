@@ -5,7 +5,11 @@
     class="directory-container"
     :class="{ highlight: isHighlighted }"
   >
-    <button @click.stop="toggleExpand()" class="expand-button">
+    <button
+      v-if="hasChildDirectories"
+      @click.stop="toggleExpand()"
+      class="expand-button"
+    >
       <img
         src="../assets/down-arrow.svg"
         class="expand-icon"
@@ -13,14 +17,7 @@
         :style="{ transform: isExpanded ? 'rotate(180deg)' : 'none' }"
       />
     </button>
-    <div class="directory-name">
-      <span
-        v-if="item.parentPath"
-        :class="{ 'parent-path': true, 'highlight-parent': isHighlighted }"
-        >{{ item.parentPath }}/</span
-      >
-      {{ item.name }}
-    </div>
+    <div class="directory-name">{{ item.name }}</div>
     <span class="image-count-tag">{{ fileCountLabel }}</span>
   </div>
   <div v-if="hasChildDirectories && isExpanded" class="nested">
