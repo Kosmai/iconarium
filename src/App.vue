@@ -165,7 +165,7 @@ const filterFiles = (structure) => {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-auto-rows: auto;
   overflow-y: auto;
-  height: 100%;
+  height: fit-content;
 }
 
 .icon-details {
