@@ -5,7 +5,7 @@
       :key="index"
       :item="item"
       :selectedDirectory="selectedDirectory"
-      :expand="true"
+      :expand="false"
       @select="directorySelected"
     />
   </div>
@@ -36,7 +36,7 @@ const directorySelected = (event) => {
 <style scoped>
 .sidebar {
   width: 500px;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #f0f0f054;
   padding: 10px;
   display: flex;
   align-items: flex-start;

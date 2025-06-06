@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="!item.isFile"
     @click="toggle()"
     class="directory-container"
     :class="{ highlight: isHighlighted }"
@@ -28,7 +29,7 @@
       :key="child.name"
       :item="child"
       :selectedDirectory="selectedDirectory"
-      :expand="isExpanded"
+      :expand="false"
       @select="toggle"
     />
   </div>

@@ -136,7 +136,6 @@ const filterFiles = (structure) => {
   align-items: center;
   padding: 10px;
   gap: 1rem;
-  border-bottom: 1px solid #ccc;
 }
 
 .search-input {
