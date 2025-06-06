@@ -6,8 +6,8 @@ A cross-platform Electron app that lets you open a local folder and view all nes
 
 ## ✨ Features
 
-- 🗂 Open any local folder and recursively scan subdirectories  
-- 🖼 Display all icon files (`.svg`, `.png`, etc.) in a visual grid  (Only svgs supported for now)
+- 🗂 Open any local folder and recursively scan subdirectories
+- 🖼 Display all icon files (`.svg`, `.png`, etc.) in a visual grid (Only svgs supported for now)
 - 🔍 Lightweight and easy to use with a clean UI
 - ⛵ See all your icons at a glace, and right click to copy their path
 - ⚡ Built with [Electron](https://www.electronjs.org/) and [Vue 3](https://vuejs.org/)
@@ -21,6 +21,7 @@ A cross-platform Electron app that lets you open a local folder and view all nes
 ## 🚀 Getting Started
 
 ### Steps to init:
+
 1. Clone the repo
 2. npm install
 3. npm run dev (in one terminal)

@@ -171,8 +171,6 @@ const filterFiles = (structure) => {
 .icon-details {
   display: flex;
   flex-direction: column;
-  padding: 12px;
-  width: 100%;
-  max-width: 280px;
+  padding-left: 12px;
 }
 </style>
