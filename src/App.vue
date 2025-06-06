@@ -76,6 +76,7 @@ const selectedItems = ref({});
 const loadIcons = async (withFolderSelection = true) => {
   icons.value = await window.fsAPI.readIcons(withFolderSelection);
   iconsToRender.value = filterFiles(icons.value);
+  console.log(icons.value);
 };
 
 const directorySelected = (event) => {

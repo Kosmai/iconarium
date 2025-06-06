@@ -64,7 +64,7 @@ const getDirectoryStructure = (rootDirectory) => {
     {
       isFile: false,
       name: path.basename(rootDirectory),
-      path: path.basename(rootDirectory),
+      path: "",
       children: structure,
     },
   ];

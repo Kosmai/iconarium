@@ -60,13 +60,12 @@ watch(
   },
 );
 
-const toggle = (event) => {
+const toggle = (event = null) => {
   emit("select", event ? event : props.item.path);
 };
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value;
-  console.log(props.item.children);
 };
 
 const directFileCount = ref(
@@ -76,9 +75,6 @@ const directFileCount = ref(
 const isExpanded = ref(props.expand);
 
 const isHighlighted = computed(() => {
-  if (!props.selectedDirectory) {
-    return false;
-  }
   return props.item.path === props.selectedDirectory;
 });
 
