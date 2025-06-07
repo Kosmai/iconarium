@@ -120,7 +120,7 @@ const filterFiles = (structure) => {
   flex-direction: column;
   font-family: sans-serif;
   height: 80vh;
-  width: 80vw;
+  width: 95vw;
 }
 
 .main-layout {

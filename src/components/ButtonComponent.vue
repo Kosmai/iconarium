@@ -16,7 +16,7 @@
 defineProps({
   label: {
     type: String,
-    default: "Button",
+    default: "",
   },
   icon: {
     // The relative path to the icon image inside the assets folder

@@ -6,6 +6,24 @@
     <div class="details-row">
       <span class="label">Name:</span>
       <span class="value">{{ item.name }}</span>
+      <img
+        src="../assets/clipboard.svg"
+        width="20px"
+        alt="Copy"
+        style="cursor: pointer"
+        @click="copyValue(item.name)"
+      />
+    </div>
+    <div class="details-row">
+      <span class="label">Path:</span>
+      <span class="value">{{ path }}</span>
+      <img
+        src="../assets/clipboard.svg"
+        width="20px"
+        alt="Copy"
+        style="cursor: pointer"
+        @click="copyValue(path)"
+      />
     </div>
     <div v-if="item.size" class="details-row">
       <span class="label">Size:</span>
@@ -27,7 +45,6 @@
   <div class="actions">
     <div class="actions-item">
       <span v-if="showCopiedFeedback"> Copied! </span>
-      <ButtonComponent label="Copy Path" @click="copyItem(item)" />
     </div>
   </div>
 </template>
@@ -36,15 +53,22 @@
 import { formatFileSize, formatTime } from "../utils/formattingUtils";
 import ButtonComponent from "./ButtonComponent.vue";
 import { useCopyItem } from "../composables/useCopyItem.js";
+import { computed } from "vue";
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
 
-const { copyItem, showCopiedFeedback } = useCopyItem();
+const path = computed(() => {
+  return props.item.parentPath
+    ? `${props.item.parentPath}/${props.item.name}`
+    : props.item.name;
+});
+
+const { copyItem, copyValue, showCopiedFeedback } = useCopyItem();
 </script>
 
 <style>
