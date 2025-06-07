@@ -1,26 +1,28 @@
 <template>
   <div v-if="itemsToRenderCount" class="app-container">
-    <TopBar
-      :icon-filters="filters"
-      :total-icons="itemsToRenderCount"
-      @reset-filters="initializeFilters"
-    />
     <div class="main-layout">
       <DirectoriesSidebar
         :directoryStructure="items"
         :selectedDirectory="filters.folder"
         @directory-selected="directorySelected"
       />
-      <div class="main-content">
-        <IconItem
-          v-for="icon in itemsToRender"
-          :key="icon.name"
-          :item="icon"
-          :filters="filters"
-          :selected-items="selectedItems"
-          @select-single="selectItem($event, false)"
-          @select-multiple="selectItem($event, true)"
+      <div class="main-view">
+        <TopBar
+          :icon-filters="filters"
+          :total-icons="itemsToRenderCount"
+          @clear-filters="initializeFilters"
         />
+        <div class="main-content">
+          <IconItem
+            v-for="icon in itemsToRender"
+            :key="icon.name"
+            :item="icon"
+            :filters="filters"
+            :selected-items="selectedItems"
+            @select-single="selectItem($event, false)"
+            @select-multiple="selectItem($event, true)"
+          />
+        </div>
       </div>
       <div class="icon-details" v-if="selectedItemsCount">
         <IconDetails
@@ -127,15 +129,18 @@ const filterFiles = (structure) => {
   min-height: 0;
 }
 
+.main-view {
+  width: 100%;
+  height: fit-content;
+  padding: 20px;
+}
+
 .main-content {
   display: grid;
-  padding: 20px;
-  width: 100%;
   gap: 16px;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   grid-auto-rows: auto;
   overflow-y: auto;
-  height: fit-content;
 }
 
 .icon-details {

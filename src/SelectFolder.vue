@@ -1,22 +1,25 @@
 <template>
   <div style="display: flex; gap: 16px; flex-direction: column">
-    <div v-if="recentFolder">
-      <button @click="selectPreviousFolder" style="margin-right: 16px">
+    <div style="display: flex; align-items: center" v-if="recentFolder">
+      <ButtonComponent
+        @click="selectPreviousFolder"
+        style="width: 150px; margin-right: 16px"
+      >
         Open previous folder
-      </button>
-      {{ recentFolder }}
+      </ButtonComponent>
+      <div>{{ recentFolder }}</div>
     </div>
-    <button @click="selectFolder" style="margin-left: 16px">
+    <ButtonComponent @click="selectFolder">
       Select icons folder
-    </button>
+    </ButtonComponent>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import ButtonComponent from "./components/ButtonComponent.vue";
 
 const emit = defineEmits(["select", "selectPreviousFolder"]);
-
 const recentFolder = ref(null);
 
 onMounted(async () => {
