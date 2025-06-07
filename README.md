@@ -14,7 +14,7 @@ A cross-platform Electron app that lets you open a local folder and view all nes
 
 ---
 
-![image](https://github.com/user-attachments/assets/9b574044-1e4e-4055-bde0-0cd42aa99f31)
+![image](https://github.com/user-attachments/assets/7405bb12-d774-4029-bc98-f1c593801ae1)
 
 ---
 
