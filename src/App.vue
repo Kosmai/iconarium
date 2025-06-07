@@ -1,47 +1,30 @@
 <template>
-  <div v-if="iconsToRender.length" class="app-container">
-    <!-- Top bar: Search + Filters -->
-    <div class="top-bar">
-      <div class="filters">
-        <div @click="resetFilters">Clear filters</div>
-        <label>
-          <select v-model="iconFilters.extension">
-            <option value="">All formats</option>
-            <option value=".svg">SVG</option>
-            <option value=".png">PNG</option>
-          </select>
-        </label>
-      </div>
-      <input
-        v-model="iconFilters.search"
-        type="text"
-        placeholder="Search..."
-        class="search-input"
-      />
-      <p class="items-metric">{{ iconsToRender.length }} items</p>
-    </div>
-
-    <!-- Layout: Sidebar + Main -->
+  <div v-if="itemsToRenderCount" class="app-container">
+    <TopBar
+      :icon-filters="filters"
+      :total-icons="itemsToRenderCount"
+      @reset-filters="initializeFilters"
+    />
     <div class="main-layout">
       <DirectoriesSidebar
-        :directoryStructure="icons"
-        :selectedDirectory="iconFilters.folder"
+        :directoryStructure="items"
+        :selectedDirectory="filters.folder"
         @directory-selected="directorySelected"
       />
       <div class="main-content">
         <IconItem
-          v-for="icon in iconsToRender"
+          v-for="icon in itemsToRender"
           :key="icon.name"
           :item="icon"
-          :filters="iconFilters"
+          :filters="filters"
           :selected-items="selectedItems"
           @select-single="selectItem($event, false)"
           @select-multiple="selectItem($event, true)"
         />
       </div>
-      <div class="icon-details" v-if="Object.keys(selectedItems).length">
+      <div class="icon-details" v-if="selectedItemsCount">
         <IconDetails
-          v-if="Object.keys(selectedItems).length === 1"
+          v-if="selectedItemsCount === 1"
           :item="Object.values(selectedItems)[0]"
         />
         <IconDetailsMultiple v-else :items="selectedItems" />
@@ -56,31 +39,45 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import IconItem from "./components/IconItem.vue";
 import SelectFolder from "./SelectFolder.vue";
 import IconDetails from "./components/IconDetails.vue";
 import DirectoriesSidebar from "./components/DirectoriesSidebar.vue";
 import IconDetailsMultiple from "./components/IconDetailsMultiple.vue";
+import TopBar from "./components/TopBar.vue";
 
-const iconFilters = ref({
-  folder: null,
-  extension: "",
-  search: "",
-});
-
-const icons = ref([]);
-const iconsToRender = ref([]);
+const filters = ref({});
+const items = ref([]);
+const itemsToRender = ref([]);
 const selectedItems = ref({});
 
+const initializeFilters = () => {
+  filters.value = {
+    folder: null,
+    extension: "",
+    search: "",
+  };
+};
+
+initializeFilters();
+
+const itemsToRenderCount = computed(() => {
+  return itemsToRender.value.length;
+});
+
+const selectedItemsCount = computed(() => {
+  return Object.keys(selectedItems.value).length;
+});
+
 const loadIcons = async (withFolderSelection = true) => {
-  icons.value = await window.fsAPI.readIcons(withFolderSelection);
-  iconsToRender.value = filterFiles(icons.value);
-  console.log(icons.value);
+  items.value = await window.fsAPI.readIcons(withFolderSelection);
+  itemsToRender.value = filterFiles(items.value);
+  console.log(items.value);
 };
 
 const directorySelected = (event) => {
-  iconFilters.value.folder = event;
+  filters.value.folder = event;
 };
 
 const selectItem = (event, multipleSelection) => {
@@ -93,14 +90,6 @@ const selectItem = (event, multipleSelection) => {
     return;
   }
   selectedItems.value[event.url] = event;
-};
-
-const resetFilters = () => {
-  iconFilters.value = {
-    folder: null,
-    extension: "",
-    search: "",
-  };
 };
 
 const filterFiles = (structure) => {
@@ -130,25 +119,6 @@ const filterFiles = (structure) => {
   font-family: sans-serif;
   height: 80vh;
   width: 80vw;
-}
-
-.top-bar {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  gap: 1rem;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 6px 10px;
-  font-size: 1rem;
-}
-
-.filters {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }
 
 .main-layout {
