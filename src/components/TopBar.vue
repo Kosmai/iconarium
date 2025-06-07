@@ -15,7 +15,7 @@
         </select>
       </label>
       <ButtonComponent label="Clear" icon="clear.svg" @click="clearFilters" />
-      <p class="items-metric">{{ totalIcons }} items</p>
+      <div class="items-metric">{{ totalIcons }} items</div>
     </div>
   </div>
 </template>
@@ -52,7 +52,6 @@ const clearFilters = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
   gap: 1rem;
 }
 

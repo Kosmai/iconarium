@@ -149,7 +149,7 @@ const filterFiles = (structure) => {
 .main-view {
   width: 100%;
   height: fit-content;
-  padding: 20px;
+  padding: 8px 16px;
 }
 
 .main-content {
