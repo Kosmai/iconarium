@@ -2,7 +2,7 @@
   <div
     v-if="shouldShowItem"
     @click="selectItem"
-    @click.right="copyItem"
+    @click.right="selectAndCopy"
     class="icon-container"
     :class="{ highlight: isHighlighted }"
     :style="`background-image: url(${item.url});`"
@@ -13,7 +13,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useCopyItem } from "../composables/useCopyItem.js";
 
 const emit = defineEmits(["select-single", "select-multiple"]);
 
@@ -32,7 +33,7 @@ const props = defineProps({
   },
 });
 
-const showCopiedFeedback = ref(false);
+const { copyItem, showCopiedFeedback } = useCopyItem();
 
 const selectItem = (event) => {
   if (event.ctrlKey || event.metaKey) {
@@ -46,15 +47,9 @@ const isHighlighted = computed(() => {
   return props.selectedItems[props.item.url] ?? false;
 });
 
-const copyItem = (event) => {
+const selectAndCopy = (event) => {
   selectItem(event);
-  navigator.clipboard
-    .writeText(`${props.item.parentPath}/${props.item.name}`)
-    .then(() => {
-      showCopiedFeedback.value = true;
-      setTimeout(() => (showCopiedFeedback.value = false), 1000); // Hide after 1 second
-    });
-  return false;
+  copyItem(props.item);
 };
 
 const shouldShowItem = computed(() => {

@@ -24,17 +24,27 @@
       <span class="value">{{ formatTime(item.createdTime) }}</span>
     </div>
   </div>
+  <div class="actions">
+    <div class="actions-item">
+      <span v-if="showCopiedFeedback"> Copied! </span>
+      <ButtonComponent label="Copy Path" @click="copyItem(item)" />
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { formatFileSize, formatTime } from "../utils/formattingUtils";
+import ButtonComponent from "./ButtonComponent.vue";
+import { useCopyItem } from "../composables/useCopyItem.js";
 
-const props = defineProps({
+defineProps({
   item: {
     type: Object,
     required: true,
   },
 });
+
+const { copyItem, showCopiedFeedback } = useCopyItem();
 </script>
 
 <style>
@@ -74,5 +84,18 @@ const props = defineProps({
   flex: 1;
   color: #ffffff80;
   word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px;
+}
+
+.actions-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 </style>
