@@ -3,8 +3,7 @@ const Store = require("electron-store").default;
 const path = require("path");
 const fs = require("fs");
 
-// const iconDir = path.resolve(__dirname, '../icons');
-const ALLOWED_EXTENSIONS = [".svg"];
+const ALLOWED_EXTENSIONS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".ico"];
 const store = new Store();
 
 async function openFolderDialog() {

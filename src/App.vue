@@ -28,6 +28,7 @@
         <IconDetails
           v-if="selectedItemsCount === 1"
           :item="Object.values(selectedItems)[0]"
+          @enlarge-image="showEnlargedImage"
         />
         <IconDetailsMultiple v-else :items="selectedItems" />
       </div>
@@ -38,6 +39,13 @@
     @select="loadIcons"
     @selectPreviousFolder="loadIcons(false)"
   />
+  <div
+    v-if="enlargedImageUrl"
+    class="enlarged-image-overlay"
+    @click="hideEnlargedImage"
+  >
+    <img :src="enlargedImageUrl" class="enlarged-image" alt="Enlarged Image" />
+  </div>
 </template>
 
 <script setup>
@@ -53,6 +61,7 @@ const filters = ref({});
 const items = ref([]);
 const itemsToRender = ref([]);
 const selectedItems = ref({});
+const enlargedImageUrl = ref(null);
 
 const initializeFilters = () => {
   filters.value = {
@@ -92,6 +101,14 @@ const selectItem = (event, multipleSelection) => {
     return;
   }
   selectedItems.value[event.url] = event;
+};
+
+const showEnlargedImage = (url) => {
+  enlargedImageUrl.value = url;
+};
+
+const hideEnlargedImage = () => {
+  enlargedImageUrl.value = null;
 };
 
 const filterFiles = (structure) => {
@@ -149,5 +166,26 @@ const filterFiles = (structure) => {
   padding: 12px;
   width: 100%;
   max-width: 280px;
+}
+
+.enlarged-image-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+  user-select: none;
+}
+
+.enlarged-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
 }
 </style>

@@ -1,6 +1,12 @@
 <template>
   <div class="icon-container">
-    <img :src="item.url" :alt="item.name" class="icon" />
+    <img
+      :src="item.url"
+      :alt="item.name"
+      class="icon"
+      @click="showEnlargedImage"
+      style="cursor: zoom-in"
+    />
   </div>
   <div class="details">
     <div class="details-row">
@@ -51,9 +57,10 @@
 
 <script setup>
 import { formatFileSize, formatTime } from "../utils/formattingUtils";
-import ButtonComponent from "./ButtonComponent.vue";
 import { useCopyItem } from "../composables/useCopyItem.js";
 import { computed } from "vue";
+
+const emit = defineEmits(["enlarge-image"]);
 
 const props = defineProps({
   item: {
@@ -68,7 +75,11 @@ const path = computed(() => {
     : props.item.name;
 });
 
-const { copyItem, copyValue, showCopiedFeedback } = useCopyItem();
+const { copyValue, showCopiedFeedback } = useCopyItem();
+
+const showEnlargedImage = () => {
+  emit("enlarge-image", props.item.url);
+};
 </script>
 
 <style>
