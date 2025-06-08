@@ -1,4 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  dialog,
+  clipboard,
+  nativeImage,
+} = require("electron");
 const Store = require("electron-store").default;
 const path = require("path");
 const fs = require("fs");
@@ -71,20 +78,6 @@ const getDirectoryStructure = (rootDirectory) => {
   ];
 };
 
-ipcMain.handle("readIcons", async (event, withFolderSelection) => {
-  try {
-    const rootDirectory = withFolderSelection
-      ? await openFolderDialog()
-      : (store.get("recentFolderPath") ?? (await openFolderDialog()));
-    return getDirectoryStructure(rootDirectory);
-  } catch (error) {
-    return { error: error.message };
-  }
-});
-ipcMain.handle("retrieveRecentFolderPath", () => {
-  return store.get("recentFolderPath") ?? null;
-});
-
 function createWindow() {
   const win = new BrowserWindow({
     show: false, // hide until it's ready
@@ -99,6 +92,10 @@ function createWindow() {
   win.show();
   win.loadURL("http://localhost:5173"); // assuming Vite dev server
 }
+
+// =====================================================================
+//                          tagAPI Handlers
+// =====================================================================
 
 ipcMain.handle("tags:add", (e, iconName, tag) => {
   tagManager.addTag(iconName, tag);
@@ -121,3 +118,46 @@ ipcMain.handle("tags:getAll", () => {
 
 console.log("Current Electron Store data:", store.store);
 app.whenReady().then(createWindow);
+
+// =====================================================================
+//                          fsAPI Handlers
+// =====================================================================
+
+ipcMain.handle("readIcons", async (event, withFolderSelection) => {
+  try {
+    const rootDirectory = withFolderSelection
+      ? await openFolderDialog()
+      : (store.get("recentFolderPath") ?? (await openFolderDialog()));
+    return getDirectoryStructure(rootDirectory);
+  } catch (error) {
+    return { error: error.message };
+  }
+});
+
+ipcMain.handle("retrieveRecentFolderPath", () => {
+  return store.get("recentFolderPath") ?? null;
+});
+
+ipcMain.handle("copyImageToClipboard", async (event, imageUrl) => {
+  try {
+    // Convert file:// URL to path if needed
+    const filePath = imageUrl.startsWith("file://")
+      ? imageUrl.slice(7)
+      : imageUrl;
+
+    try {
+      const image = nativeImage.createFromPath(filePath);
+      if (!image.isEmpty()) {
+        clipboard.writeImage(image);
+        return true;
+      }
+    } catch (e) {
+      throw new Error("Image is empty or invalid");
+    }
+
+    throw new Error("Unsupported image URL format");
+  } catch (error) {
+    console.error("Error copying image to clipboard:", error);
+    throw error;
+  }
+});

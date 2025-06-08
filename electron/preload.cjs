@@ -19,6 +19,13 @@ contextBridge.exposeInMainWorld("fsAPI", {
       return [];
     }
   },
+  copyImageToClipboard: async (imageUrl) => {
+    try {
+      return await ipcRenderer.invoke("copyImageToClipboard", imageUrl);
+    } catch (error) {
+      return false;
+    }
+  },
 });
 
 contextBridge.exposeInMainWorld("tagAPI", {

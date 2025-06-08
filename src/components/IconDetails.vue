@@ -7,6 +7,14 @@
       @click="showEnlargedImage"
       style="cursor: zoom-in"
     />
+    <img
+      v-if="canCopyImageType"
+      src="../assets/clipboard.svg"
+      width="20px"
+      alt="Copy"
+      style="cursor: pointer"
+      @click="copyImageToClipboard(item.url)"
+    />
   </div>
   <div class="details">
     <div class="details-row">
@@ -94,6 +102,11 @@ const props = defineProps({
   },
 });
 
+const canCopyImageType = computed(() => {
+  const copyableTypes = new Set([".png"]); // More should be supportd in the future
+  return copyableTypes.has(props.item.extension);
+});
+
 const path = computed(() => {
   return props.item.parentPath
     ? `${props.item.parentPath}/${props.item.name}`
@@ -123,6 +136,15 @@ const addTagClicked = () => {
 
 const showEnlargedImage = () => {
   emit("enlarge-image", props.item.url);
+};
+
+const copyImageToClipboard = async (imageUrl) => {
+  let success = await window.fsAPI.copyImageToClipboard(imageUrl);
+  if (success) {
+    console.log("Copied icon to clipboard:", imageUrl);
+  } else {
+    console.error("Error: Could not copy icon to clipboard:", imageUrl);
+  }
 };
 </script>
 
