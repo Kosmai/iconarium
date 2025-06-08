@@ -29,6 +29,7 @@
 
 <script setup>
 import ButtonComponent from "./ButtonComponent.vue";
+import { onMounted, ref } from "vue";
 
 defineProps({
   iconFilters: {
@@ -49,10 +50,14 @@ const extensionOptions = [
   { value: ".png", label: "PNG" },
 ];
 
-const tagOptions = [
-  { value: null, label: "All tags" },
-  { value: "cool", label: "cool" },
-];
+const tagOptions = ref([{ value: null, label: "All tags" }]);
+
+onMounted(async () => {
+  // Ensure tagOptions is populated with tags from the API
+  const tags = await window.tagAPI.getAllTags();
+  console.log("Available tags:", tags);
+  tagOptions.value.push(...tags.map((tag) => ({ value: tag, label: tag })));
+});
 
 const clearFilters = () => {
   emit("clear-filters");

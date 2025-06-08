@@ -115,6 +115,9 @@ ipcMain.handle("tags:getByTag", (e, tag) => {
 ipcMain.handle("tags:set", (e, iconName, tags) => {
   tagManager.setTags(iconName, tags);
 });
+ipcMain.handle("tags:getAll", () => {
+  return tagManager.getAllTags();
+});
 
 console.log("Current Electron Store data:", store.store);
 app.whenReady().then(createWindow);

@@ -7,7 +7,6 @@ export function useTags(iconNameRef) {
       tags.value = await window.tagAPI.getTags(iconNameRef.value);
     } catch (error) {
       console.error("Error loading tags:", error);
-      return [];
     }
   };
 

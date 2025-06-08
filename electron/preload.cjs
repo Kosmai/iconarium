@@ -27,4 +27,5 @@ contextBridge.exposeInMainWorld("tagAPI", {
   getTags: (icon) => ipcRenderer.invoke("tags:get", icon),
   getIconsByTag: (tag) => ipcRenderer.invoke("tags:getByTag", tag),
   setTags: (icon, tags) => ipcRenderer.invoke("tags:set", icon, tags),
+  getAllTags: () => ipcRenderer.invoke("tags:getAll"),
 });

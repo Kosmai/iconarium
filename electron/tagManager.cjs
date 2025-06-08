@@ -49,10 +49,22 @@ function setTags(iconName, tags) {
   saveIcons(icons);
 }
 
+function getAllTags() {
+  const icons = loadIcons();
+  const allTags = new Set();
+  Object.values(icons).forEach((tags) => {
+    if (Array.isArray(tags)) {
+      tags.forEach((tag) => allTags.add(tag));
+    }
+  });
+  return Array.from(allTags);
+}
+
 module.exports = {
   addTag,
   removeTag,
   getTags,
   getIconsByTag,
   setTags,
+  getAllTags,
 };
