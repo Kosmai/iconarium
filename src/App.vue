@@ -14,10 +14,9 @@
         />
         <div class="main-content">
           <IconItem
-            v-for="icon in itemsToRender"
+            v-for="icon in filteredItemsToRender"
             :key="icon.name"
             :item="icon"
-            :filters="filters"
             :selected-items="selectedItems"
             @select-single="selectItem($event, false)"
             @select-multiple="selectItem($event, true)"
@@ -49,7 +48,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import IconItem from "./components/IconItem.vue";
 import SelectFolder from "./SelectFolder.vue";
 import IconDetails from "./components/IconDetails.vue";
@@ -62,16 +61,28 @@ const items = ref([]);
 const itemsToRender = ref([]);
 const selectedItems = ref({});
 const enlargedImageUrl = ref(null);
+const taggedItems = ref([]);
 
 const initializeFilters = () => {
   filters.value = {
     folder: null,
     extension: "",
     search: "",
+    tag: null,
   };
 };
 
 initializeFilters();
+
+watch(
+  filters,
+  async (newFilters) => {
+    taggedItems.value = newFilters.tag
+      ? await window.tagAPI.getIconsByTag(newFilters.tag)
+      : [];
+  },
+  { deep: true },
+);
 
 const itemsToRenderCount = computed(() => {
   return itemsToRender.value.length;
@@ -83,9 +94,27 @@ const selectedItemsCount = computed(() => {
 
 const loadIcons = async (withFolderSelection = true) => {
   items.value = await window.fsAPI.readIcons(withFolderSelection);
-  itemsToRender.value = filterFiles(items.value);
+  itemsToRender.value = cleanFileStructure(items.value);
   console.log(items.value);
 };
+
+const filteredItemsToRender = computed(() => {
+  return itemsToRender.value.filter((item) => {
+    if (filters.value.extension && item.extension !== filters.value.extension) {
+      return false;
+    }
+    if (filters.value.folder && item.parentPath !== filters.value.folder) {
+      return false;
+    }
+    if (filters.value.search && !item.name.includes(filters.value.search)) {
+      return false;
+    }
+    if (taggedItems.value.length && !taggedItems.value.includes(item.name)) {
+      return false;
+    }
+    return true;
+  });
+});
 
 const directorySelected = (event) => {
   filters.value.folder = event;
@@ -111,7 +140,8 @@ const hideEnlargedImage = () => {
   enlargedImageUrl.value = null;
 };
 
-const filterFiles = (structure) => {
+const cleanFileStructure = (structure) => {
+  // Recursively traverse the file structure to remove empty directories
   let result = [];
 
   Object.keys(structure).forEach((key) => {
@@ -120,7 +150,7 @@ const filterFiles = (structure) => {
     if (item.isFile) {
       result.push(item); // Keep the file
     } else if (item.children) {
-      const filteredChildren = filterFiles(item.children); // Recursively filter children
+      const filteredChildren = cleanFileStructure(item.children); // Recursively filter children
       if (Object.keys(filteredChildren).length > 0) {
         result = result.concat(filteredChildren);
       }

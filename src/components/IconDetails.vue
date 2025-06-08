@@ -101,7 +101,7 @@ const path = computed(() => {
 });
 
 const iconName = computed(() => props.item.name);
-const showAddTagPopup = ref(true);
+const showAddTagPopup = ref(false);
 const addTagPopup = ref(null);
 
 const { copyValue, showCopiedFeedback } = useCopyItem();

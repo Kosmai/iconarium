@@ -14,6 +14,13 @@
           </option>
         </select>
       </label>
+      <label>
+        <select v-model="iconFilters.tag">
+          <option v-for="option in tagOptions" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </label>
       <ButtonComponent label="Clear" icon="clear.svg" @click="clearFilters" />
       <div class="items-metric">{{ totalIcons }} items</div>
     </div>
@@ -40,6 +47,11 @@ const extensionOptions = [
   { value: "", label: "All formats" },
   { value: ".svg", label: "SVG" },
   { value: ".png", label: "PNG" },
+];
+
+const tagOptions = [
+  { value: null, label: "All tags" },
+  { value: "cool", label: "cool" },
 ];
 
 const clearFilters = () => {

@@ -39,7 +39,7 @@ function getTags(iconName) {
 function getIconsByTag(tag) {
   const icons = loadIcons();
   return Object.entries(icons)
-    .filter(([_, tags]) => tags.includes(tag))
+    .filter(([_, tags]) => Array.isArray(tags) && tags.includes(tag))
     .map(([iconName]) => iconName);
 }
 

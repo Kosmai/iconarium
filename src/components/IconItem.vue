@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="shouldShowItem"
     @click="selectItem"
     @click.right="selectAndCopy"
     class="icon-container"
@@ -51,22 +50,6 @@ const selectAndCopy = (event) => {
   selectItem(event);
   copyItem(props.item);
 };
-
-const shouldShowItem = computed(() => {
-  if (
-    props.filters.extension &&
-    props.filters.extension !== props.item.extension
-  ) {
-    return false;
-  }
-  if (props.filters.folder && props.filters.folder !== props.item.parentPath) {
-    return false;
-  }
-  if (props.filters.search && !props.item.name.includes(props.filters.search)) {
-    return false;
-  }
-  return true;
-});
 </script>
 
 <style scoped>
