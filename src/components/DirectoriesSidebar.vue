@@ -13,7 +13,6 @@
 
 <script setup>
 import SidebarItem from "./SidebarItem.vue";
-import { defineEmits, defineProps } from "vue";
 
 const emit = defineEmits(["directory-selected"]);
 
