@@ -47,6 +47,29 @@
       <span class="label">Created:</span>
       <span class="value">{{ formatTime(item.createdTime) }}</span>
     </div>
+    <div class="tags">
+      <div class="tag" v-for="tag in tags">
+        {{ tag }}
+        <img
+          src="../assets/clear.svg"
+          width="20px"
+          alt="Remove tag"
+          style="cursor: pointer"
+          @click="removeTag(tag)"
+        />
+      </div>
+      <ButtonComponent icon="plus.svg" label="Add tag" @click="addTagClicked" />
+      <input
+        v-if="showAddTagPopup"
+        ref="addTagPopup"
+        type="text"
+        placeholder="Enter tag name"
+        @keyup.enter="addTagConfirm($event.target.value)"
+        @keyup.esc="showAddTagPopup = false"
+        @blur="showAddTagPopup = false"
+        class="tag-input"
+      />
+    </div>
   </div>
   <div class="actions">
     <div class="actions-item">
@@ -58,7 +81,9 @@
 <script setup>
 import { formatFileSize, formatTime } from "../utils/formattingUtils";
 import { useCopyItem } from "../composables/useCopyItem.js";
-import { computed } from "vue";
+import { computed, nextTick, ref } from "vue";
+import { useTags } from "../composables/useTags.js";
+import ButtonComponent from "./ButtonComponent.vue";
 
 const emit = defineEmits(["enlarge-image"]);
 
@@ -75,7 +100,26 @@ const path = computed(() => {
     : props.item.name;
 });
 
+const iconName = computed(() => props.item.name);
+const showAddTagPopup = ref(true);
+const addTagPopup = ref(null);
+
 const { copyValue, showCopiedFeedback } = useCopyItem();
+const { tags, addTag, removeTag } = useTags(iconName);
+
+const addTagConfirm = (tagName) => {
+  addTag(tagName);
+  showAddTagPopup.value = false;
+};
+
+const addTagClicked = () => {
+  showAddTagPopup.value = true;
+  nextTick(() => {
+    if (addTagPopup.value) {
+      addTagPopup.value.focus();
+    }
+  });
+};
 
 const showEnlargedImage = () => {
   emit("enlarge-image", props.item.url);
@@ -132,5 +176,31 @@ const showEnlargedImage = () => {
   justify-content: center;
   align-items: center;
   gap: 8px;
+}
+
+.tag {
+  background-color: #db5858;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: fit-content;
+  padding: 4px;
+  border-radius: 4px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.tag-input {
+  margin-top: 8px;
+  padding: 4px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f054;
+  background-color: #30303b;
+  color: white;
+  width: calc(100% - 8px);
 }
 </style>

@@ -20,3 +20,11 @@ contextBridge.exposeInMainWorld("fsAPI", {
     }
   },
 });
+
+contextBridge.exposeInMainWorld("tagAPI", {
+  addTag: (icon, tag) => ipcRenderer.invoke("tags:add", icon, tag),
+  removeTag: (icon, tag) => ipcRenderer.invoke("tags:remove", icon, tag),
+  getTags: (icon) => ipcRenderer.invoke("tags:get", icon),
+  getIconsByTag: (tag) => ipcRenderer.invoke("tags:getByTag", tag),
+  setTags: (icon, tags) => ipcRenderer.invoke("tags:set", icon, tags),
+});

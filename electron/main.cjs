@@ -3,6 +3,8 @@ const Store = require("electron-store").default;
 const path = require("path");
 const fs = require("fs");
 
+const tagManager = require("./tagManager.cjs");
+
 const ALLOWED_EXTENSIONS = [".svg", ".png", ".jpg", ".jpeg", ".webp", ".ico"];
 const store = new Store();
 
@@ -98,4 +100,21 @@ function createWindow() {
   win.loadURL("http://localhost:5173"); // assuming Vite dev server
 }
 
+ipcMain.handle("tags:add", (e, iconName, tag) => {
+  tagManager.addTag(iconName, tag);
+});
+ipcMain.handle("tags:remove", (e, iconName, tag) => {
+  tagManager.removeTag(iconName, tag);
+});
+ipcMain.handle("tags:get", (e, iconName) => {
+  return tagManager.getTags(iconName);
+});
+ipcMain.handle("tags:getByTag", (e, tag) => {
+  return tagManager.getIconsByTag(tag);
+});
+ipcMain.handle("tags:set", (e, iconName, tags) => {
+  tagManager.setTags(iconName, tags);
+});
+
+console.log("Current Electron Store data:", store.store);
 app.whenReady().then(createWindow);
